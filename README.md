@@ -1,1 +1,583 @@
-# recruit-ai-site
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コジローくん</title>
+
+<style>
+:root{ --red:#b51f2a; }
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+  font-family:"Hiragino Sans","Yu Gothic",sans-serif;
+  background:#fff;
+  overflow:hidden;
+}
+
+.container{
+  display:flex;
+  width:100%;
+  height:100vh;
+}
+
+.left{
+  width:42%;
+  min-width:420px;
+  background:linear-gradient(180deg,#2f2f2f,#1f1f1f);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  color:white;
+}
+
+.right{
+  flex:1;
+  padding:42px;
+  display:flex;
+  flex-direction:column;
+}
+
+.title{
+  margin-top:20px;
+  font-size:34px;
+  font-weight:bold;
+}
+
+.sub{
+  margin-top:10px;
+  color:#ccc;
+  text-align:center;
+  line-height:1.7;
+}
+
+.messages{
+  flex:1;
+  overflow-y:auto;
+  background:#f7f7f7;
+  border-radius:24px;
+  padding:24px;
+  border:1px solid #eee;
+}
+
+.bubble{
+  background:white;
+  padding:16px 18px;
+  border-radius:18px;
+  margin-bottom:14px;
+  line-height:1.8;
+  border:1px solid #ececec;
+  max-width:80%;
+}
+
+.user{
+  margin-left:auto;
+  background:#efefef;
+  border-left:5px solid var(--red);
+}
+
+.quick{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:20px;
+}
+
+.quick button{
+  border:none;
+  background:#f3f3f3;
+  padding:13px 18px;
+  border-radius:999px;
+  cursor:pointer;
+}
+
+.quick button:hover{
+  background:var(--red);
+  color:white;
+}
+
+.input-area{
+  display:flex;
+  gap:12px;
+  margin-top:20px;
+}
+
+input{
+  flex:1;
+  border:1px solid #ddd;
+  border-radius:999px;
+  padding:16px 18px;
+  font-size:16px;
+  outline:none;
+}
+
+.send{
+  border:none;
+  background:var(--red);
+  color:white;
+  padding:0 24px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.owl{
+  width:250px;
+  height:250px;
+  animation:float 3s ease-in-out infinite;
+}
+
+.eye{
+  animation:blink 4s infinite;
+  transform-origin:center;
+}
+
+.pupil{
+  animation:look 5s ease-in-out infinite;
+}
+
+.wing-left{
+  animation:wingLeft 3s ease-in-out infinite;
+  transform-origin:60px 120px;
+}
+
+.wing-right{
+  animation:wingRight 3s ease-in-out infinite;
+  transform-origin:140px 120px;
+}
+
+@keyframes float{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-10px); }
+}
+
+@keyframes blink{
+  0%,45%,100%{ transform:scaleY(1); }
+  48%,52%{ transform:scaleY(.08); }
+}
+
+@keyframes look{
+  0%,100%{ transform:translateX(0); }
+  50%{ transform:translateX(2px); }
+}
+
+@keyframes wingLeft{
+  0%,100%{ transform:rotate(0); }
+  50%{ transform:rotate(-8deg); }
+}
+
+@keyframes wingRight{
+  0%,100%{ transform:rotate(0); }
+  50%{ transform:rotate(8deg); }
+}
+
+/* スマホ版 */
+.mobile-hero,
+.mobile-card,
+.mobile-launcher,
+.mobile-sheet,
+.overlay{
+  display:none;
+}
+
+@media(max-width:768px){
+  body{ overflow:auto; }
+
+  .container{ display:none; }
+
+  .mobile-hero{
+    display:block;
+    margin:24px 18px 0;
+    background:linear-gradient(135deg,#fff,#f1f1f1);
+    border-radius:28px;
+    padding:28px 22px;
+    border:1px solid #e5e5e5;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+  }
+
+  .tag{
+    display:inline-block;
+    background:var(--red);
+    color:white;
+    padding:7px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:14px;
+  }
+
+  .mobile-hero h1{
+    font-size:27px;
+    line-height:1.3;
+  }
+
+  .mobile-hero p{
+    margin-top:12px;
+    line-height:1.8;
+    color:#555;
+    font-size:14px;
+  }
+
+  .mobile-card{
+    display:block;
+    margin:18px;
+    background:#fafafa;
+    border:1px solid #eee;
+    border-radius:18px;
+    padding:16px;
+    line-height:1.6;
+    font-size:14px;
+  }
+
+  .mobile-launcher{
+    display:flex;
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    width:88px;
+    height:88px;
+    border-radius:50%;
+    background:#eee;
+    align-items:center;
+    justify-content:center;
+    z-index:20;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+  }
+
+  .mobile-launcher .owl{
+    width:76px;
+    height:76px;
+  }
+
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.25);
+    z-index:30;
+  }
+
+  .overlay.open{
+    display:block;
+  }
+
+  .mobile-sheet{
+    position:fixed;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%) translateY(105%);
+    width:min(430px,100%);
+    height:78vh;
+    background:white;
+    border-radius:28px 28px 0 0;
+    z-index:40;
+    transition:.28s;
+    overflow:hidden;
+  }
+
+  .mobile-sheet.open{
+    display:flex;
+    flex-direction:column;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .mobile-header{
+    background:linear-gradient(135deg,#3f3f3f,#1f1f1f);
+    color:white;
+    padding:16px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:4px solid var(--red);
+  }
+
+  .close{
+    border:none;
+    background:rgba(255,255,255,.18);
+    color:white;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    font-size:20px;
+  }
+
+  .mobile-sheet .messages{
+    border-radius:0;
+    border:none;
+    flex:1;
+  }
+
+  .mobile-sheet .quick{
+    padding:12px;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+    margin-top:0;
+  }
+
+  .mobile-sheet .quick button{
+    white-space:nowrap;
+  }
+
+  .mobile-sheet .input-area{
+    padding:12px;
+    margin-top:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="left">
+    <div class="owl">
+      <svg viewBox="0 0 200 200">
+        <ellipse cx="100" cy="128" rx="54" ry="58" fill="#555"/>
+        <ellipse cx="100" cy="136" rx="38" ry="42" fill="#f1f1f1"/>
+        <path class="wing-left" d="M58 115 C24 124 18 152 22 174 C45 174 62 164 70 143 Z" fill="#555"/>
+        <path class="wing-right" d="M142 115 C176 124 182 152 178 174 C155 174 138 164 130 143 Z" fill="#555"/>
+        <path d="M52 48 L72 63 L61 28 Z" fill="#555"/>
+        <path d="M148 48 L128 63 L139 28 Z" fill="#555"/>
+        <ellipse cx="100" cy="80" rx="62" ry="54" fill="#555"/>
+        <path d="M67 43 C82 60 118 60 133 43" stroke="#b51f2a" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="76" cy="83" r="26" fill="white"/>
+        <circle cx="124" cy="83" r="26" fill="white"/>
+        <g class="eye">
+          <circle class="pupil" cx="76" cy="83" r="12" fill="#222"/>
+          <circle cx="71" cy="77" r="4" fill="white"/>
+        </g>
+        <g class="eye">
+          <circle class="pupil" cx="124" cy="83" r="12" fill="#222"/>
+          <circle cx="119" cy="77" r="4" fill="white"/>
+        </g>
+        <path d="M92 103 L108 103 L100 118 Z" fill="#f3a024"/>
+      </svg>
+    </div>
+
+    <div class="title">コジローくん</div>
+    <div class="sub">就活生が欲しい情報へ<br>最短で辿り着ける採用AI</div>
+  </div>
+
+  <div class="right">
+    <h2>採用サイトAI</h2>
+
+    <p style="margin:10px 0 24px;color:#666;line-height:1.7;">
+      気になる質問を選択してください。<br>
+      必要な情報ページへご案内します。
+    </p>
+
+    <div id="pcMessages" class="messages">
+      <div class="bubble">
+        こんにちはホッ。<br>
+        採用AIのコジローくんだホッ。
+      </div>
+    </div>
+
+    <div class="quick">
+      <button onclick="reply('未経験でも大丈夫？')">未経験でも大丈夫？</button>
+      <button onclick="reply('研修制度について')">研修制度</button>
+      <button onclick="reply('SESについて')">SESについて</button>
+      <button onclick="reply('会社の雰囲気')">会社の雰囲気</button>
+      <button onclick="reply('福利厚生')">福利厚生</button>
+    </div>
+
+    <div class="input-area">
+      <input id="pcInput" placeholder="自由入力もできます" onkeypress="if(event.key==='Enter')sendPc()">
+      <button class="send" onclick="sendPc()">送信</button>
+    </div>
+  </div>
+</div>
+
+<!-- スマホ版 -->
+<div class="mobile-hero">
+  <span class="tag">採用サイトAI</span>
+  <h1>知りたい情報へ、<br>スマホで最短アクセス。</h1>
+  <p>コジローくんは、就活生が気になる情報をすぐ確認できる採用サイトナビゲーターです。</p>
+</div>
+
+<div class="mobile-card">右下のコジローくんをタップすると、チャットが開きます。</div>
+
+<button class="mobile-launcher" onclick="openMobile()">
+  <div class="owl">
+    <svg viewBox="0 0 200 200">
+      <ellipse cx="100" cy="128" rx="54" ry="58" fill="#555"/>
+      <ellipse cx="100" cy="136" rx="38" ry="42" fill="#f1f1f1"/>
+      <path class="wing-left" d="M58 115 C24 124 18 152 22 174 C45 174 62 164 70 143 Z" fill="#555"/>
+      <path class="wing-right" d="M142 115 C176 124 182 152 178 174 C155 174 138 164 130 143 Z" fill="#555"/>
+      <path d="M52 48 L72 63 L61 28 Z" fill="#555"/>
+      <path d="M148 48 L128 63 L139 28 Z" fill="#555"/>
+      <ellipse cx="100" cy="80" rx="62" ry="54" fill="#555"/>
+      <path d="M67 43 C82 60 118 60 133 43" stroke="#b51f2a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <circle cx="76" cy="83" r="26" fill="white"/>
+      <circle cx="124" cy="83" r="26" fill="white"/>
+      <g class="eye">
+        <circle class="pupil" cx="76" cy="83" r="12" fill="#222"/>
+        <circle cx="71" cy="77" r="4" fill="white"/>
+      </g>
+      <g class="eye">
+        <circle class="pupil" cx="124" cy="83" r="12" fill="#222"/>
+        <circle cx="119" cy="77" r="4" fill="white"/>
+      </g>
+      <path d="M92 103 L108 103 L100 118 Z" fill="#f3a024"/>
+    </svg>
+  </div>
+</button>
+
+<div id="overlay" class="overlay" onclick="closeMobile()"></div>
+
+<div id="mobileSheet" class="mobile-sheet">
+  <div class="mobile-header">
+    コジローくん
+    <button class="close" onclick="closeMobile()">×</button>
+  </div>
+
+  <div id="mobileMessages" class="messages">
+    <div class="bubble">
+      こんにちはホッ。<br>
+      採用AIのコジローくんだホッ。
+    </div>
+  </div>
+
+  <div class="quick">
+    <button onclick="replyMobile('未経験でも大丈夫？')">未経験でも大丈夫？</button>
+    <button onclick="replyMobile('研修制度について')">研修制度</button>
+    <button onclick="replyMobile('SESについて')">SESについて</button>
+    <button onclick="replyMobile('会社の雰囲気')">会社の雰囲気</button>
+    <button onclick="replyMobile('福利厚生')">福利厚生</button>
+  </div>
+
+  <div class="input-area">
+    <input id="mobileInput" placeholder="自由入力もできます" onkeypress="if(event.key==='Enter')sendMobile()">
+    <button class="send" onclick="sendMobile()">送信</button>
+  </div>
+</div>
+
+<script>
+const answers = {
+  "未経験でも大丈夫？":
+  "ホッ。だいじょうぶホッ。まずは研修制度を見るのがおすすめホッ。",
+
+  "研修制度について":
+  "ホッ。研修では、入社後の学習フローやサポート体制を確認できるホッ。",
+
+  "SESについて":
+  "ホッ。SESについては、働き方やキャリア形成を見るのがおすすめホッ。",
+
+  "会社の雰囲気":
+  "ホッ。社員インタビューを見ると、会社の雰囲気が伝わりやすいホッ。",
+
+  "福利厚生":
+  "ホッ。福利厚生については募集要項ページで確認できるホッ。"
+};
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+
+  speechSynthesis.cancel();
+
+  const cleanText = text
+    .replace(/！/g, "。")
+    .replace(/!/g, "。")
+    .replace(/？/g, "。")
+    .replace(/\?/g, "。")
+    .replace(/🦉/g, "");
+
+  const parts = cleanText
+    .replace(/。/g, "。|")
+    .split("|")
+    .map(t => t.trim())
+    .filter(Boolean);
+
+  parts.forEach((part, index) => {
+    const u = new SpeechSynthesisUtterance(part);
+
+    u.lang = "ja-JP";
+    u.volume = 1;
+
+    // 外部サイトなしでできる範囲の、少し可愛い声
+    u.pitch = 1.55;
+    u.rate = 0.95;
+
+    setTimeout(() => {
+      speechSynthesis.speak(u);
+    }, index * 650);
+  });
+}
+
+function addMessage(area,text,type=""){
+  const div = document.createElement("div");
+  div.className = "bubble " + type;
+  div.innerHTML = text;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+function reply(q){
+  const area = document.getElementById("pcMessages");
+  addMessage(area, "あなた：" + q, "user");
+
+  setTimeout(() => {
+    addMessage(area, "コジロー：" + answers[q]);
+    speak(answers[q]);
+  }, 500);
+}
+
+function sendPc(){
+  const input = document.getElementById("pcInput");
+  if(!input.value.trim()) return;
+
+  const area = document.getElementById("pcMessages");
+  addMessage(area, "あなた：" + input.value, "user");
+
+  input.value = "";
+
+  const response =
+    "ホッ。気になる質問だホッ。詳しいことは、ぜひ面談で社員に聞いてみてほしいホッ。";
+
+  setTimeout(() => {
+    addMessage(area, "コジロー：" + response);
+    speak(response);
+  }, 500);
+}
+
+function openMobile(){
+  document.getElementById("mobileSheet").classList.add("open");
+  document.getElementById("overlay").classList.add("open");
+}
+
+function closeMobile(){
+  document.getElementById("mobileSheet").classList.remove("open");
+  document.getElementById("overlay").classList.remove("open");
+}
+
+function replyMobile(q){
+  const area = document.getElementById("mobileMessages");
+  addMessage(area, "あなた：" + q, "user");
+
+  setTimeout(() => {
+    addMessage(area, "コジロー：" + answers[q]);
+    speak(answers[q]);
+  }, 500);
+}
+
+function sendMobile(){
+  const input = document.getElementById("mobileInput");
+  if(!input.value.trim()) return;
+
+  const area = document.getElementById("mobileMessages");
+  addMessage(area, "あなた：" + input.value, "user");
+
+  input.value = "";
+
+  const response =
+    "ホッ。気になる質問だホッ。詳しいことは、ぜひ面談で社員に聞いてみてほしいホッ。";
+
+  setTimeout(() => {
+    addMessage(area, "コジロー：" + response);
+    speak(response);
+  }, 500);
+}
+</script>
+
+</body>
+</html>
